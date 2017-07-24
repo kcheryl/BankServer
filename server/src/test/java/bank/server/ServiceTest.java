@@ -2,13 +2,17 @@ package bank.server;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import bank.server.beans.Transaction;
 import bank.server.exception.DuplicateAccountException;
 import bank.server.exception.ExceedWithdrawLimitException;
 import bank.server.exception.InsufficientAmountException;
 import bank.server.exception.InsufficientBalanceException;
+import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
 import bank.server.exception.InvalidAccountNameException;
 import bank.server.exception.InvalidDateException;
@@ -27,7 +31,8 @@ public class ServiceTest {
 		serv.createAccount("Joce", 2000); // id=4
 		serv.createAccount("Rachel", 170); // id=5
 		serv.createAccount("Peach", 550); // id=6
-
+		serv.createAccount("Kim", 1000); // id=7
+		serv.createAccount("Vice", 550); // id=8
 	}
 
 	// TestCreateAcc ------------------------------------------
@@ -35,7 +40,7 @@ public class ServiceTest {
 	public void testCreateAcc()
 			throws InvalidAccountNameException, InsufficientBalanceException, DuplicateAccountException {
 		String result = serv.createAccount("Rose", 200);
-		String expected = "Account is successfully created, id: 9";
+		String expected = "Account is successfully created, id: 11";
 		assertEquals(expected, result);
 	}
 
@@ -60,10 +65,9 @@ public class ServiceTest {
 
 	// TestShowBal ------------------------------------------
 	@Test
-	public void testShowBalAcc() throws InvalidAccountException, InvalidAccountNameException,
-			InsufficientBalanceException, DuplicateAccountException {
+	public void testShowBalAcc() throws InvalidAccountException {
 		String result = serv.showBalance(1).toString();
-		String expected = "Account : [name=Jane, id=1, balance=$200.00]";
+		String expected = "Account:[Name=Jane, Id=1, Balance=$200.00]";
 		assertEquals(expected, result);
 	}
 
@@ -77,7 +81,7 @@ public class ServiceTest {
 	public void testDeposit() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InvalidDateException {
 		String result = serv.deposit(2, 100.50, "20/4").toString();
-		String expected = "Account : [name=Peter, id=2, balance=$600.50]";
+		String expected = "Account:[Name=Peter, Id=2, Balance=$600.50]";
 		assertEquals(expected, result);
 	}
 
@@ -104,7 +108,7 @@ public class ServiceTest {
 	public void testWithdraw() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InvalidDateException, ExceedWithdrawLimitException {
 		String result = serv.withdraw(3, 100, "20/7").toString();
-		String expected = "Account : [name=Wil, id=3, balance=$122.00]";
+		String expected = "Account:[Name=Wil, Id=3, Balance=$122.00]";
 		assertEquals(expected, result);
 	}
 
@@ -127,10 +131,10 @@ public class ServiceTest {
 	}
 
 	@Test(expected = bank.server.exception.ExceedWithdrawLimitException.class)
-	public void testWithdrawExceed1000() throws InvalidAccountNameException, InsufficientBalanceException,
+	public void testWithdrawExceed() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InvalidDateException, ExceedWithdrawLimitException {
 		serv.withdraw(4, 500, "10/7");
-		serv.withdraw(4, 501, "10/7/2017");
+		serv.withdraw(4, 600, "10/7/2017");
 	}
 
 	// TestFundTransfer ------------------------------------------
@@ -138,7 +142,7 @@ public class ServiceTest {
 	public void testfundTransfer() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InsufficientAmountException, InvalidDateException {
 		String result = serv.fundTransfer(5, 6, 50.50, "25/4").toString();
-		String expected = "Account : [name=Rachel, id=5, balance=$119.50]";
+		String expected = "Account:[Name=Rachel, Id=5, Balance=$119.50]";
 		assertEquals(expected, result);
 	}
 
@@ -164,6 +168,41 @@ public class ServiceTest {
 	public void testInvalidDate() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InsufficientAmountException, InvalidDateException {
 		serv.fundTransfer(5, 6, 20, "2/40");
+	}
+
+	// TestPrintTransactions10 ------------------------------------------
+	@Test
+	public void testPrintTrans10() throws InvalidAccountException, InvalidDateException, InsufficientBalanceException,
+			ExceedWithdrawLimitException, InsufficientAmountException, InsufficientTransactionsException {
+		serv.deposit(7, 100, "2/2");
+		serv.deposit(7, 55, "3/2");
+		serv.fundTransfer(7, 8, 250, "10/2");
+		serv.withdraw(7, 20, "21/2");
+		serv.deposit(7, 350, "3/3");
+		serv.withdraw(7, 400, "6/3");
+		serv.fundTransfer(7, 8, 40, "10/3");
+		serv.deposit(7, 60, "14/3");
+		serv.deposit(7, 10, "24/3");
+		serv.withdraw(7, 100, "26/3");
+		List<Transaction> result = serv.printTransactions10(7);
+		String expected = "[Transaction:[TransactionId=4, Description=Deposit, Date=2/2/2017, Type=CR, Amount=$100.00, Balance=$1100.00], "
+				+ "Transaction:[TransactionId=5, Description=Deposit, Date=3/2/2017, Type=CR, Amount=$55.00, Balance=$1155.00], "
+				+ "Transaction:[TransactionId=6, Description=Transfer to account id: 8, Date=10/2/2017, Type=DR, Amount=$250.00, Balance=$905.00], "
+				+ "Transaction:[TransactionId=8, Description=Withdraw, Date=21/2/2017, Type=DR, Amount=$20.00, Balance=$885.00], "
+				+ "Transaction:[TransactionId=9, Description=Deposit, Date=3/3/2017, Type=CR, Amount=$350.00, Balance=$1235.00], "
+				+ "Transaction:[TransactionId=10, Description=Withdraw, Date=6/3/2017, Type=DR, Amount=$400.00, Balance=$835.00], "
+				+ "Transaction:[TransactionId=11, Description=Transfer to account id: 8, Date=10/3/2017, Type=DR, Amount=$40.00, Balance=$795.00], "
+				+ "Transaction:[TransactionId=13, Description=Deposit, Date=14/3/2017, Type=CR, Amount=$60.00, Balance=$855.00], "
+				+ "Transaction:[TransactionId=14, Description=Deposit, Date=24/3/2017, Type=CR, Amount=$10.00, Balance=$865.00], "
+				+ "Transaction:[TransactionId=15, Description=Withdraw, Date=26/3/2017, Type=DR, Amount=$100.00, Balance=$765.00]]";
+		assertEquals(expected, result.toString());
+	}
+
+	@Test(expected = bank.server.exception.InsufficientTransactionsException.class)
+	public void testPrintTrans10Invalid() throws InvalidAccountException, InvalidDateException,
+			InsufficientBalanceException, InsufficientTransactionsException {
+		serv.deposit(8, 200, "4/6");
+		serv.printTransactions10(8);
 	}
 
 }

@@ -1,6 +1,7 @@
 package bank.server.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bank.server.beans.Account;
 import bank.server.beans.Transaction;
@@ -8,6 +9,7 @@ import bank.server.exception.DuplicateAccountException;
 import bank.server.exception.ExceedWithdrawLimitException;
 import bank.server.exception.InsufficientAmountException;
 import bank.server.exception.InsufficientBalanceException;
+import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
 import bank.server.exception.InvalidAccountNameException;
 import bank.server.exception.InvalidDateException;
@@ -60,21 +62,21 @@ public class ServiceImp implements IService {
 			throw new InvalidDateException("Invalid date");
 		}
 
-		ArrayList<Transaction> list = acc.getTransactionList();
+		List<Transaction> list = acc.getTransactionList();
 		int totalAmt = 0;
 		for (Transaction trans : list) {
 			if (trans.getDate().equals(parsedDate) && trans.getDescription().equals("Withdraw")) {
 				totalAmt += trans.getAmount();
 			}
 		}
-		if (totalAmt > 1000) {
+		if (totalAmt + amount > 1000) {
 			throw new ExceedWithdrawLimitException("Exceeded limit for withdrawal");
 		}
 		double newBal = acc.getBalance() - amount;
 		acc.setBalance(newBal);
 		String descrip = "Withdraw";
 		String type = "DR";
-		Transaction trans = new Transaction(descrip, type, parsedDate, newBal);
+		Transaction trans = new Transaction(descrip, type, parsedDate, amount, newBal);
 		acc.addTransaction(trans);
 		return acc;
 	}
@@ -97,7 +99,7 @@ public class ServiceImp implements IService {
 		acc.setBalance(newBal);
 		String descrip = "Deposit";
 		String type = "CR";
-		Transaction trans = new Transaction(descrip, type, parsedDate, newBal);
+		Transaction trans = new Transaction(descrip, type, parsedDate, amount, newBal);
 		acc.addTransaction(trans);
 		return acc;
 	}
@@ -148,35 +150,35 @@ public class ServiceImp implements IService {
 		srcAcc.setBalance(newBal);
 		String descrip = "Transfer to account id: " + destAcc.getID();
 		String type = "DR";
-		Transaction trans = new Transaction(descrip, type, parsedDate, newBal);
+		Transaction trans = new Transaction(descrip, type, parsedDate, amount, newBal);
 		srcAcc.addTransaction(trans);
 
 		newBal = destAcc.getBalance() + amount;
 		destAcc.setBalance(newBal);
 		descrip = "Transfer from account id: " + srcAcc.getID();
 		type = "CR";
-		trans = new Transaction(descrip, type, parsedDate, newBal);
+		trans = new Transaction(descrip, type, parsedDate, amount, newBal);
 		destAcc.addTransaction(trans);
 
 		return srcAcc;
 	}
 
-	public ArrayList<Transaction> printTransactions10(int id) {
-		// Account acc = repo.findOneID(id);
-		// ArrayList<Transaction> transList = acc.getTransactionList();
-		// Collections.sort(transList);
-		// ArrayList<Transaction> newList = new ArrayList<Transaction>();
-		// int count = 0;
-		// for (Transaction trans : transList) {
-		// if (count < 10) {
-		// newList.add(trans);
-		// count++;
-		// }
-		// }
-		return null;
+	public List<Transaction> printTransactions10(int id) throws InsufficientTransactionsException {
+		Account acc = repo.findOneID(id);
+		List<Transaction> transList = acc.getTransactionList();
+		if (transList.size() < 10) {
+			throw new InsufficientTransactionsException("Insufficient transactions to print");
+		}
+
+		int index = transList.size() - 10;
+		List<Transaction> newList = new ArrayList<Transaction>();
+		for (int i = index; i < transList.size(); i++) {
+			newList.add(transList.get(i));
+		}
+		return newList;
 	}
 
-	public ArrayList<Transaction> printTransactionsPeriod(int id, String startDate, String endDate) {
+	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate) {
 		return null;
 	}
 

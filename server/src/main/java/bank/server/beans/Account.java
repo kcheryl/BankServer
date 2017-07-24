@@ -1,6 +1,7 @@
 package bank.server.beans;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bank.server.utility.UniqueIDGenerator;
 
@@ -8,7 +9,7 @@ public class Account {
 	private String name;
 	private int id;
 	private double balance;
-	private ArrayList<Transaction> list;
+	private List<Transaction> list;
 
 	public Account(String name, double balance) {
 		this.name = name;
@@ -29,7 +30,7 @@ public class Account {
 		return this.balance;
 	}
 
-	public ArrayList<Transaction> getTransactionList() {
+	public List<Transaction> getTransactionList() {
 		return this.list;
 	}
 
@@ -51,7 +52,7 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "Account : [name=" + name + ", id=" + id + ", balance=$" + String.format("%.2f", balance) + "]";
+		return "Account:[Name=" + name + ", Id=" + id + ", Balance=$" + String.format("%.2f", balance) + "]";
 	}
 
 }
