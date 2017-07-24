@@ -16,7 +16,6 @@ import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
 import bank.server.exception.InvalidAccountNameException;
 import bank.server.exception.InvalidDateException;
-import bank.server.exception.InvalidTransactionPeriodException;
 import bank.server.service.ServiceImp;
 
 public class ServiceTest {
@@ -210,7 +209,7 @@ public class ServiceTest {
 
 	@Test
 	public void testPrintTransPeriod() throws InvalidAccountException, InvalidDateException,
-			InsufficientBalanceException, InsufficientTransactionsException, InvalidTransactionPeriodException {
+			InsufficientBalanceException, InsufficientTransactionsException {
 		serv.deposit(9, 20, "2/3");
 		serv.deposit(9, 200, "3/3");
 		serv.deposit(9, 25, "4/5");
@@ -221,11 +220,11 @@ public class ServiceTest {
 		assertEquals(expected, result.toString());
 	}
 
-	@Test(expected = bank.server.exception.InvalidTransactionPeriodException.class)
+	@Test(expected = bank.server.exception.InvalidDateException.class)
 	public void testPrintTransPeriodInvalid() throws InvalidAccountException, InvalidDateException,
-			InsufficientBalanceException, InsufficientTransactionsException, InvalidTransactionPeriodException {
+			InsufficientBalanceException, InsufficientTransactionsException {
 		serv.deposit(10, 200, "4/1");
-		serv.printTransactionsPeriod(10, "2/3", "5/4");
+		serv.printTransactionsPeriod(10, "2/5", "5/4");
 	}
 
 }

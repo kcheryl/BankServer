@@ -14,7 +14,6 @@ import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
 import bank.server.exception.InvalidAccountNameException;
 import bank.server.exception.InvalidDateException;
-import bank.server.exception.InvalidTransactionPeriodException;
 import bank.server.repo.AccountRepoImp;
 
 public class ServiceImp implements IService {
@@ -186,7 +185,7 @@ public class ServiceImp implements IService {
 	}
 
 	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate)
-			throws InvalidDateException, InsufficientTransactionsException, InvalidTransactionPeriodException {
+			throws InvalidDateException, InsufficientTransactionsException {
 		String parsedStartDate = checkDate(startDate);
 		String parsedEndDate = checkDate(endDate);
 		if (parsedStartDate == null || compareDate(parsedStartDate, parsedEndDate) > 0) {
@@ -204,19 +203,14 @@ public class ServiceImp implements IService {
 		}
 
 		List<Transaction> newList = new ArrayList<>();
-		int count = 0;
 		for (Transaction trans : transList) {
 			int startValue = compareDate(parsedStartDate, trans.getDate());
 			int endValue = compareDate(parsedEndDate, trans.getDate());
 			if (startValue <= 0 && endValue >= 0) {
 				newList.add(trans);
-				count++;
 			}
 		}
 
-		if (count == 0) {
-			throw new InvalidTransactionPeriodException("Invalid transaction period");
-		}
 		return newList;
 	}
 
