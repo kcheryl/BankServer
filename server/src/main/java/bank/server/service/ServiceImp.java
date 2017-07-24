@@ -123,16 +123,14 @@ public class ServiceImp implements IService {
 			year = 2017;
 		}
 
-		if (day < 1 || day > 31) {
+		Calendar c = Calendar.getInstance();
+		c.setLenient(false);
+		try {
+			c.set(year, month, day);
+			c.getTime();
+		} catch (Exception e) {
 			return null;
 		}
-		if (month < 1 || month > 12) {
-			return null;
-		}
-		if (year < 1) {
-			return null;
-		}
-
 		return day + "/" + month + "/" + year;
 	}
 
