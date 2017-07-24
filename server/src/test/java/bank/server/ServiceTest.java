@@ -44,11 +44,11 @@ public class ServiceTest {
 			String expected = "Account is successfully created, id: 11";
 			assertEquals(expected, result);
 		} catch (InvalidAccountNameException e) {
-
+			e.printStackTrace();
 		} catch (InsufficientBalanceException e) {
-
+			e.printStackTrace();
 		} catch (DuplicateAccountException e) {
-
+			e.printStackTrace();
 		}
 
 	}
