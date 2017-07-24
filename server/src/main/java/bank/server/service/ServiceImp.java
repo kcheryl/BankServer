@@ -25,7 +25,8 @@ public class ServiceImp implements IService {
 
 	public String createAccount(String name, double balance)
 			throws InvalidAccountNameException, InsufficientBalanceException, DuplicateAccountException {
-		if (name == null || name.equals("")) {
+		String empty = "";
+		if (name == null || name.equals(empty)) {
 			throw new InvalidAccountNameException("Invalid account name");
 		}
 		if (balance < 100) {
@@ -60,19 +61,25 @@ public class ServiceImp implements IService {
 		}
 		String parsedDate = checkDate(date);
 		if (parsedDate == null) {
-			throw new InvalidDateException("Invalid date");
+			throw new InvalidDateException("Invalid date for withdrawal");
 		}
 
+		return processWithdraw(acc, amount, parsedDate);
+	}
+
+	public Account processWithdraw(Account acc, double amount, String parsedDate) throws ExceedWithdrawLimitException {
 		List<Transaction> list = acc.getTransactionList();
 		int totalAmt = 0;
 		for (Transaction trans : list) {
-			if (trans.getDate().equals(parsedDate) && trans.getDescription().equals("Withdraw")) {
+			String withdraw = "Withdraw";
+			if (trans.getDate().equals(parsedDate) && trans.getDescription().equals(withdraw)) {
 				totalAmt += trans.getAmount();
 			}
 		}
 		if (totalAmt + amount > 1000) {
 			throw new ExceedWithdrawLimitException("Exceeded limit for withdrawal");
 		}
+
 		double newBal = acc.getBalance() - amount;
 		acc.setBalance(newBal);
 		String descrip = "Withdraw";
@@ -93,7 +100,7 @@ public class ServiceImp implements IService {
 		}
 		String parsedDate = checkDate(date);
 		if (parsedDate == null) {
-			throw new InvalidDateException("Invalid date");
+			throw new InvalidDateException("Invalid date for deposit");
 		}
 
 		double newBal = acc.getBalance() + amount;
