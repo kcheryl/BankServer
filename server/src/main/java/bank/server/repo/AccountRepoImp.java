@@ -7,7 +7,7 @@ public class AccountRepoImp implements IAccountRepo {
 	private ArrayList<Account> list;
 
 	public AccountRepoImp() {
-		list = new ArrayList<Account>();
+		list = new ArrayList<>();
 	}
 
 	public String save(Account acc) {

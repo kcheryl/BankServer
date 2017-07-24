@@ -14,7 +14,7 @@ public class Account {
 	public Account(String name, double balance) {
 		this.name = name;
 		this.balance = balance;
-		list = new ArrayList<Transaction>();
+		list = new ArrayList<>();
 		id = UniqueIDGenerator.getAccID();
 	}
 
