@@ -37,11 +37,20 @@ public class ServiceTest {
 
 	// TestCreateAcc ------------------------------------------
 	@Test
-	public void testCreateAcc()
-			throws InvalidAccountNameException, InsufficientBalanceException, DuplicateAccountException {
-		String result = serv.createAccount("Rose", 200);
-		String expected = "Account is successfully created, id: 11";
-		assertEquals(expected, result);
+	public void testCreateAcc() {
+		String result;
+		try {
+			result = serv.createAccount("Rose", 200);
+			String expected = "Account is successfully created, id: 11";
+			assertEquals(expected, result);
+		} catch (InvalidAccountNameException e) {
+
+		} catch (InsufficientBalanceException e) {
+
+		} catch (DuplicateAccountException e) {
+
+		}
+
 	}
 
 	@Test(expected = bank.server.exception.InvalidAccountNameException.class)
