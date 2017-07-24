@@ -1,6 +1,5 @@
 package bank.server.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bank.server.beans.Account;
@@ -31,5 +30,6 @@ public interface IService {
 
 	public List<Transaction> printTransactions10(int id) throws InsufficientTransactionsException;
 
-	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate);
+	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate)
+			throws InvalidDateException, InsufficientTransactionsException;
 }

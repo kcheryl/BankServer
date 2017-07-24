@@ -33,24 +33,17 @@ public class ServiceTest {
 		serv.createAccount("Peach", 550); // id=6
 		serv.createAccount("Kim", 1000); // id=7
 		serv.createAccount("Vice", 550); // id=8
+		serv.createAccount("Wallace", 300); // id=9
+		serv.createAccount("Pat", 740); // id=10
 	}
 
 	// TestCreateAcc ------------------------------------------
 	@Test
-	public void testCreateAcc() {
-		String result;
-		try {
-			result = serv.createAccount("Rose", 200);
-			String expected = "Account is successfully created, id: 11";
-			assertEquals(expected, result);
-		} catch (InvalidAccountNameException e) {
-			e.printStackTrace();
-		} catch (InsufficientBalanceException e) {
-			e.printStackTrace();
-		} catch (DuplicateAccountException e) {
-			e.printStackTrace();
-		}
-
+	public void testCreateAcc()
+			throws InvalidAccountNameException, InsufficientBalanceException, DuplicateAccountException {
+		String result = serv.createAccount("Rose", 200);
+		String expected = "Account is successfully created, id: 13";
+		assertEquals(expected, result);
 	}
 
 	@Test(expected = bank.server.exception.InvalidAccountNameException.class)
@@ -158,19 +151,19 @@ public class ServiceTest {
 	@Test(expected = bank.server.exception.InvalidAccountException.class)
 	public void testInvalidSrcAcc() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InsufficientAmountException, InvalidDateException {
-		serv.fundTransfer(10, 6, 100, "17/6");
+		serv.fundTransfer(20, 6, 100, "17/6");
 	}
 
 	@Test(expected = bank.server.exception.InvalidAccountException.class)
 	public void testInvalidDestAcc() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InsufficientAmountException, InvalidDateException {
-		serv.fundTransfer(6, 10, 20, "2/6");
+		serv.fundTransfer(6, 20, 20, "2/6");
 	}
 
 	@Test(expected = bank.server.exception.InsufficientAmountException.class)
 	public void testInvalidBal() throws InvalidAccountNameException, InsufficientBalanceException,
 			DuplicateAccountException, InvalidAccountException, InsufficientAmountException, InvalidDateException {
-		serv.fundTransfer(6, 1, 650, "2/4");
+		serv.fundTransfer(6, 1, 1000, "2/4");
 	}
 
 	@Test(expected = bank.server.exception.InvalidDateException.class)
@@ -194,16 +187,16 @@ public class ServiceTest {
 		serv.deposit(7, 10, "24/3");
 		serv.withdraw(7, 100, "26/3");
 		List<Transaction> result = serv.printTransactions10(7);
-		String expected = "[Transaction:[TransactionId=4, Description=Deposit, Date=2/2/2017, Type=CR, Amount=$100.00, Balance=$1100.00], "
-				+ "Transaction:[TransactionId=5, Description=Deposit, Date=3/2/2017, Type=CR, Amount=$55.00, Balance=$1155.00], "
-				+ "Transaction:[TransactionId=6, Description=Transfer to account id: 8, Date=10/2/2017, Type=DR, Amount=$250.00, Balance=$905.00], "
-				+ "Transaction:[TransactionId=8, Description=Withdraw, Date=21/2/2017, Type=DR, Amount=$20.00, Balance=$885.00], "
-				+ "Transaction:[TransactionId=9, Description=Deposit, Date=3/3/2017, Type=CR, Amount=$350.00, Balance=$1235.00], "
-				+ "Transaction:[TransactionId=10, Description=Withdraw, Date=6/3/2017, Type=DR, Amount=$400.00, Balance=$835.00], "
-				+ "Transaction:[TransactionId=11, Description=Transfer to account id: 8, Date=10/3/2017, Type=DR, Amount=$40.00, Balance=$795.00], "
-				+ "Transaction:[TransactionId=13, Description=Deposit, Date=14/3/2017, Type=CR, Amount=$60.00, Balance=$855.00], "
-				+ "Transaction:[TransactionId=14, Description=Deposit, Date=24/3/2017, Type=CR, Amount=$10.00, Balance=$865.00], "
-				+ "Transaction:[TransactionId=15, Description=Withdraw, Date=26/3/2017, Type=DR, Amount=$100.00, Balance=$765.00]]";
+		String expected = "[Transaction:[TransactionId=8, Description=Deposit, Date=2/2/2017, Type=CR, Amount=$100.00, Balance=$1100.00], "
+				+ "Transaction:[TransactionId=9, Description=Deposit, Date=3/2/2017, Type=CR, Amount=$55.00, Balance=$1155.00], "
+				+ "Transaction:[TransactionId=10, Description=Transfer to account id: 8, Date=10/2/2017, Type=DR, Amount=$250.00, Balance=$905.00], "
+				+ "Transaction:[TransactionId=12, Description=Withdraw, Date=21/2/2017, Type=DR, Amount=$20.00, Balance=$885.00], "
+				+ "Transaction:[TransactionId=13, Description=Deposit, Date=3/3/2017, Type=CR, Amount=$350.00, Balance=$1235.00], "
+				+ "Transaction:[TransactionId=14, Description=Withdraw, Date=6/3/2017, Type=DR, Amount=$400.00, Balance=$835.00], "
+				+ "Transaction:[TransactionId=15, Description=Transfer to account id: 8, Date=10/3/2017, Type=DR, Amount=$40.00, Balance=$795.00], "
+				+ "Transaction:[TransactionId=17, Description=Deposit, Date=14/3/2017, Type=CR, Amount=$60.00, Balance=$855.00], "
+				+ "Transaction:[TransactionId=18, Description=Deposit, Date=24/3/2017, Type=CR, Amount=$10.00, Balance=$865.00], "
+				+ "Transaction:[TransactionId=19, Description=Withdraw, Date=26/3/2017, Type=DR, Amount=$100.00, Balance=$765.00]]";
 		assertEquals(expected, result.toString());
 	}
 
@@ -212,6 +205,19 @@ public class ServiceTest {
 			InsufficientBalanceException, InsufficientTransactionsException {
 		serv.deposit(8, 200, "4/6");
 		serv.printTransactions10(8);
+	}
+
+	@Test
+	public void testPrintTransPeriod() throws InvalidAccountException, InvalidDateException,
+			InsufficientBalanceException, InsufficientTransactionsException {
+		serv.deposit(9, 20, "2/3");
+		serv.deposit(9, 200, "3/3");
+		serv.deposit(9, 25, "4/5");
+		serv.deposit(9, 10, "10/5");
+		List<Transaction> result = serv.printTransactionsPeriod(9, "3/3", "4/5");
+		String expected = "[Transaction:[TransactionId=4, Description=Deposit, Date=3/3/2017, Type=CR, Amount=$200.00, Balance=$520.00], "
+				+ "Transaction:[TransactionId=5, Description=Deposit, Date=4/5/2017, Type=CR, Amount=$25.00, Balance=$545.00]]";
+		assertEquals(expected, result.toString());
 	}
 
 }

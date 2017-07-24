@@ -1,6 +1,7 @@
 package bank.server.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import bank.server.beans.Account;
@@ -171,15 +172,53 @@ public class ServiceImp implements IService {
 		}
 
 		int index = transList.size() - 10;
-		List<Transaction> newList = new ArrayList<Transaction>();
+		List<Transaction> newList = new ArrayList<>();
 		for (int i = index; i < transList.size(); i++) {
 			newList.add(transList.get(i));
 		}
 		return newList;
 	}
 
-	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate) {
-		return null;
+	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate)
+			throws InvalidDateException, InsufficientTransactionsException {
+		String parsedStartDate = checkDate(startDate);
+		if (parsedStartDate == null) {
+			throw new InvalidDateException("Invalid start date");
+		}
+
+		String parsedEndDate = checkDate(endDate);
+		if (parsedEndDate == null) {
+			throw new InvalidDateException("Invalid end date");
+		}
+
+		Account acc = repo.findOneID(id);
+		List<Transaction> transList = acc.getTransactionList();
+		if (transList.isEmpty()) {
+			throw new InsufficientTransactionsException("Insufficient transactions to print");
+		}
+
+		List<Transaction> newList = new ArrayList<>();
+		for (Transaction trans : transList) {
+
+			int startValue = compareDate(parsedStartDate, trans.getDate());
+			int endValue = compareDate(parsedEndDate, trans.getDate());
+			if (startValue <= 0 && endValue >= 0) {
+				newList.add(trans);
+			}
+		}
+		return newList;
+	}
+
+	// 0 if equal, <0 if before the argument time, >0 if after the argument time
+	public int compareDate(String date1, String date2) {
+		return convertDate(date1).compareTo(convertDate(date2));
+	}
+
+	public Calendar convertDate(String date) {
+		String[] str = date.split("/");
+		Calendar cal = Calendar.getInstance();
+		cal.set(Integer.valueOf(str[2]), Integer.valueOf(str[1]), Integer.valueOf(str[0]));
+		return cal;
 	}
 
 }
