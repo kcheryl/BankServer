@@ -14,6 +14,7 @@ import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
 import bank.server.exception.InvalidAccountNameException;
 import bank.server.exception.InvalidDateException;
+import bank.server.exception.InvalidTransactionPeriodException;
 import bank.server.repo.AccountRepoImp;
 
 public class ServiceImp implements IService {
@@ -54,10 +55,10 @@ public class ServiceImp implements IService {
 			InsufficientBalanceException, InvalidDateException, ExceedWithdrawLimitException {
 		Account acc = repo.findOneID(id);
 		if (acc == null) {
-			throw new InvalidAccountException("Account does not exist");
+			throw new InvalidAccountException("Account does not exist for withdrawal");
 		}
 		if (amount <= 0 || acc.getBalance() < amount) {
-			throw new InsufficientBalanceException("Insufficient balance to withdraw");
+			throw new InsufficientBalanceException("Insufficient balance for withdrawal");
 		}
 		String parsedDate = checkDate(date);
 		if (parsedDate == null) {
@@ -93,10 +94,10 @@ public class ServiceImp implements IService {
 			throws InvalidAccountException, InvalidDateException, InsufficientBalanceException {
 		Account acc = repo.findOneID(id);
 		if (acc == null) {
-			throw new InvalidAccountException("Account does not exist");
+			throw new InvalidAccountException("Account does not exist for deposit");
 		}
 		if (amount <= 0) {
-			throw new InsufficientBalanceException("Insufficient balance to deposit");
+			throw new InsufficientBalanceException("Insufficient balance for deposit");
 		}
 		String parsedDate = checkDate(date);
 		if (parsedDate == null) {
@@ -185,13 +186,13 @@ public class ServiceImp implements IService {
 	}
 
 	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate)
-			throws InvalidDateException, InsufficientTransactionsException {
+			throws InvalidDateException, InsufficientTransactionsException, InvalidTransactionPeriodException {
 		String parsedStartDate = checkDate(startDate);
-		if (parsedStartDate == null) {
+		String parsedEndDate = checkDate(endDate);
+		if (parsedStartDate == null || compareDate(parsedStartDate, parsedEndDate) > 0) {
 			throw new InvalidDateException("Invalid start date");
 		}
 
-		String parsedEndDate = checkDate(endDate);
 		if (parsedEndDate == null) {
 			throw new InvalidDateException("Invalid end date");
 		}
@@ -203,13 +204,18 @@ public class ServiceImp implements IService {
 		}
 
 		List<Transaction> newList = new ArrayList<>();
+		int count = 0;
 		for (Transaction trans : transList) {
-
 			int startValue = compareDate(parsedStartDate, trans.getDate());
 			int endValue = compareDate(parsedEndDate, trans.getDate());
 			if (startValue <= 0 && endValue >= 0) {
 				newList.add(trans);
+				count++;
 			}
+		}
+
+		if (count == 0) {
+			throw new InvalidTransactionPeriodException("Invalid transaction period");
 		}
 		return newList;
 	}

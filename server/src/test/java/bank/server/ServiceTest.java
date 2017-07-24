@@ -16,6 +16,7 @@ import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
 import bank.server.exception.InvalidAccountNameException;
 import bank.server.exception.InvalidDateException;
+import bank.server.exception.InvalidTransactionPeriodException;
 import bank.server.service.ServiceImp;
 
 public class ServiceTest {
@@ -187,16 +188,16 @@ public class ServiceTest {
 		serv.deposit(7, 10, "24/3");
 		serv.withdraw(7, 100, "26/3");
 		List<Transaction> result = serv.printTransactions10(7);
-		String expected = "[Transaction:[TransactionId=8, Description=Deposit, Date=2/2/2017, Type=CR, Amount=$100.00, Balance=$1100.00], "
-				+ "Transaction:[TransactionId=9, Description=Deposit, Date=3/2/2017, Type=CR, Amount=$55.00, Balance=$1155.00], "
-				+ "Transaction:[TransactionId=10, Description=Transfer to account id: 8, Date=10/2/2017, Type=DR, Amount=$250.00, Balance=$905.00], "
-				+ "Transaction:[TransactionId=12, Description=Withdraw, Date=21/2/2017, Type=DR, Amount=$20.00, Balance=$885.00], "
-				+ "Transaction:[TransactionId=13, Description=Deposit, Date=3/3/2017, Type=CR, Amount=$350.00, Balance=$1235.00], "
-				+ "Transaction:[TransactionId=14, Description=Withdraw, Date=6/3/2017, Type=DR, Amount=$400.00, Balance=$835.00], "
-				+ "Transaction:[TransactionId=15, Description=Transfer to account id: 8, Date=10/3/2017, Type=DR, Amount=$40.00, Balance=$795.00], "
-				+ "Transaction:[TransactionId=17, Description=Deposit, Date=14/3/2017, Type=CR, Amount=$60.00, Balance=$855.00], "
-				+ "Transaction:[TransactionId=18, Description=Deposit, Date=24/3/2017, Type=CR, Amount=$10.00, Balance=$865.00], "
-				+ "Transaction:[TransactionId=19, Description=Withdraw, Date=26/3/2017, Type=DR, Amount=$100.00, Balance=$765.00]]";
+		String expected = "[Transaction:[TransactionId=9, Description=Deposit, Date=2/2/2017, Type=CR, Amount=$100.00, Balance=$1100.00], "
+				+ "Transaction:[TransactionId=10, Description=Deposit, Date=3/2/2017, Type=CR, Amount=$55.00, Balance=$1155.00], "
+				+ "Transaction:[TransactionId=11, Description=Transfer to account id: 8, Date=10/2/2017, Type=DR, Amount=$250.00, Balance=$905.00], "
+				+ "Transaction:[TransactionId=13, Description=Withdraw, Date=21/2/2017, Type=DR, Amount=$20.00, Balance=$885.00], "
+				+ "Transaction:[TransactionId=14, Description=Deposit, Date=3/3/2017, Type=CR, Amount=$350.00, Balance=$1235.00], "
+				+ "Transaction:[TransactionId=15, Description=Withdraw, Date=6/3/2017, Type=DR, Amount=$400.00, Balance=$835.00], "
+				+ "Transaction:[TransactionId=16, Description=Transfer to account id: 8, Date=10/3/2017, Type=DR, Amount=$40.00, Balance=$795.00], "
+				+ "Transaction:[TransactionId=18, Description=Deposit, Date=14/3/2017, Type=CR, Amount=$60.00, Balance=$855.00], "
+				+ "Transaction:[TransactionId=19, Description=Deposit, Date=24/3/2017, Type=CR, Amount=$10.00, Balance=$865.00], "
+				+ "Transaction:[TransactionId=20, Description=Withdraw, Date=26/3/2017, Type=DR, Amount=$100.00, Balance=$765.00]]";
 		assertEquals(expected, result.toString());
 	}
 
@@ -209,7 +210,7 @@ public class ServiceTest {
 
 	@Test
 	public void testPrintTransPeriod() throws InvalidAccountException, InvalidDateException,
-			InsufficientBalanceException, InsufficientTransactionsException {
+			InsufficientBalanceException, InsufficientTransactionsException, InvalidTransactionPeriodException {
 		serv.deposit(9, 20, "2/3");
 		serv.deposit(9, 200, "3/3");
 		serv.deposit(9, 25, "4/5");
@@ -218,6 +219,13 @@ public class ServiceTest {
 		String expected = "[Transaction:[TransactionId=4, Description=Deposit, Date=3/3/2017, Type=CR, Amount=$200.00, Balance=$520.00], "
 				+ "Transaction:[TransactionId=5, Description=Deposit, Date=4/5/2017, Type=CR, Amount=$25.00, Balance=$545.00]]";
 		assertEquals(expected, result.toString());
+	}
+
+	@Test(expected = bank.server.exception.InvalidTransactionPeriodException.class)
+	public void testPrintTransPeriodInvalid() throws InvalidAccountException, InvalidDateException,
+			InsufficientBalanceException, InsufficientTransactionsException, InvalidTransactionPeriodException {
+		serv.deposit(10, 200, "4/1");
+		serv.printTransactionsPeriod(10, "2/3", "5/4");
 	}
 
 }

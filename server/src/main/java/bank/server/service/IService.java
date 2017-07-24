@@ -12,6 +12,7 @@ import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
 import bank.server.exception.InvalidAccountNameException;
 import bank.server.exception.InvalidDateException;
+import bank.server.exception.InvalidTransactionPeriodException;
 
 public interface IService {
 	public String createAccount(String name, double balance)
@@ -31,5 +32,5 @@ public interface IService {
 	public List<Transaction> printTransactions10(int id) throws InsufficientTransactionsException;
 
 	public List<Transaction> printTransactionsPeriod(int id, String startDate, String endDate)
-			throws InvalidDateException, InsufficientTransactionsException;
+			throws InvalidDateException, InsufficientTransactionsException, InvalidTransactionPeriodException;
 }
