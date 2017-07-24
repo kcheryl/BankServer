@@ -202,6 +202,11 @@ public class ServiceImp implements IService {
 			throw new InsufficientTransactionsException("Insufficient transactions to print");
 		}
 
+		return processTransactionsPeriod(transList, parsedStartDate, parsedEndDate);
+	}
+
+	public List<Transaction> processTransactionsPeriod(List<Transaction> transList, String parsedStartDate,
+			String parsedEndDate) {
 		List<Transaction> newList = new ArrayList<>();
 		for (Transaction trans : transList) {
 			int startValue = compareDate(parsedStartDate, trans.getDate());
