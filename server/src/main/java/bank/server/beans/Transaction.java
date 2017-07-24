@@ -49,6 +49,10 @@ public class Transaction implements Comparable<Transaction> {
 				+ ", amount=" + String.format("%.2f", balance) + ", balance=" + String.format("%.2f", balance) + "]";
 	}
 
+	public int compareTo(Transaction o) {
+		return o.getID() - this.getID();
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Transaction)) {
@@ -56,11 +60,25 @@ public class Transaction implements Comparable<Transaction> {
 		} else {
 			Transaction tmp = (Transaction) o;
 			return (tmp.id == this.id && tmp.description.equals(this.description) && tmp.date.equals(this.date)
-					&& tmp.type.equals(this.type) && tmp.amount == this.amount && tmp.balance == this.balance);
+					&& tmp.type.equals(this.type)
+					&& Double.doubleToLongBits(tmp.amount) == Double.doubleToLongBits(this.amount)
+					&& Double.doubleToLongBits(tmp.balance) == Double.doubleToLongBits(this.balance));
 		}
 	}
 
-	public int compareTo(Transaction o) {
-		return o.getID() - this.getID();
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(amount);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(balance);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
 	}
 }
