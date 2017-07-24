@@ -1,6 +1,7 @@
 package bank.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class ServiceTest {
 			String expected = "Account is successfully created, id: 13";
 			assertEquals(expected, result);
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail("Unintended exception");
 		}
 	}
 
