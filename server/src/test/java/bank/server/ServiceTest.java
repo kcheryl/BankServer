@@ -21,7 +21,7 @@ import bank.server.service.ServiceImp;
 
 public class ServiceTest {
 	static ServiceImp serv;
-	final private static String UNEXPECTED_EXCEPTION = "Unexpected exception";
+	private final static String UNEXPECTED_EXCEPTION = "Unexpected exception";
 
 	@BeforeClass
 	public static void setUpClass() {
