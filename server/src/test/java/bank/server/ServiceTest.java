@@ -18,7 +18,8 @@ public class ServiceTest {
 	static ServiceImp serv;
 
 	@BeforeClass
-	public static void setUpClass() throws Exception {
+	public static void setUpClass()
+			throws InvalidAccountNameException, InsufficientBalanceException, DuplicateAccountException {
 		serv = new ServiceImp();
 		serv.createAccount("Jane", 200); // id=1
 		serv.createAccount("Peter", 500); // id=2
