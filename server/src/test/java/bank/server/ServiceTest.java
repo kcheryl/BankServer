@@ -8,15 +8,17 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import bank.server.beans.Account;
+import bank.server.beans.Customer;
 import bank.server.beans.Transaction;
-import bank.server.exception.DuplicateAccountException;
 import bank.server.exception.ExceedWithdrawLimitException;
 import bank.server.exception.InsufficientAmountException;
 import bank.server.exception.InsufficientBalanceException;
 import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
-import bank.server.exception.InvalidAccountNameException;
+import bank.server.exception.InvalidCreationAccountDetailsException;
 import bank.server.exception.InvalidDateException;
+import bank.server.repo.AccountRepoImp;
 import bank.server.service.ServiceImp;
 
 public class ServiceTest {
@@ -25,18 +27,18 @@ public class ServiceTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		serv = new ServiceImp();
+		serv = new ServiceImp(new AccountRepoImp());
 		try {
-			serv.createAccount("Jane", 200); // id=1
-			serv.createAccount("Peter", 500); // id=2
-			serv.createAccount("Wil", 222); // id=3
-			serv.createAccount("Joce", 2000); // id=4
-			serv.createAccount("Rachel", 170); // id=5
-			serv.createAccount("Peach", 550); // id=6
-			serv.createAccount("Kim", 1000); // id=7
-			serv.createAccount("Vice", 550); // id=8
-			serv.createAccount("Wallace", 300); // id=9
-			serv.createAccount("Pat", 740); // id=10
+			serv.createAccount(new Customer("Jane"), 200); // id=1
+			serv.createAccount(new Customer("Peter"), 500); // id=2
+			serv.createAccount(new Customer("Wil"), 222); // id=3
+			serv.createAccount(new Customer("Joce"), 2000); // id=4
+			serv.createAccount(new Customer("Rachel"), 170); // id=5
+			serv.createAccount(new Customer("Peach"), 550); // id=6
+			serv.createAccount(new Customer("Kim"), 1000); // id=7
+			serv.createAccount(new Customer("Vice"), 550); // id=8
+			serv.createAccount(new Customer("Wallace"), 300); // id=9
+			serv.createAccount(new Customer("Pat"), 740); // id=10
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
 		}
@@ -45,42 +47,36 @@ public class ServiceTest {
 	// TestCreateAcc ------------------------------------------
 	@Test
 	public void testCreateAcc() {
-		String result;
+		Account result;
 		try {
-			result = serv.createAccount("Rose", 200);
-			String expected = "Account is successfully created, id: 13";
-			assertEquals(expected, result);
-		} catch (Exception e) {
+			result = serv.createAccount(new Customer("Rose"), 200);
+			String expected = "Account:[Name=Rose, Id=13, Balance=$200.00]";
+			assertEquals(expected, result.toString());
+		} catch (InvalidCreationAccountDetailsException e) {
 			fail(UNEXPECTED_EXCEPTION);
 		}
 	}
 
-	@Test(expected = bank.server.exception.InvalidAccountNameException.class)
-	public void testAccNameNull() throws InvalidAccountNameException {
+	@Test
+	public void testAccNameNull() {
+		Account result;
 		try {
-			serv.createAccount(null, 100);
-		} catch (InsufficientBalanceException | DuplicateAccountException e) {
+			result = serv.createAccount(new Customer(null), 100);
+			assertEquals(null, result);
+		} catch (InvalidCreationAccountDetailsException e) {
 			fail(UNEXPECTED_EXCEPTION);
 		}
 	}
 
-	@Test(expected = bank.server.exception.InsufficientBalanceException.class)
-	public void testAccBal20() throws InsufficientBalanceException {
-		try {
-			serv.createAccount("Wil", 20);
-		} catch (InvalidAccountNameException | DuplicateAccountException e) {
-			fail(UNEXPECTED_EXCEPTION);
-		}
+	@Test(expected = bank.server.exception.InvalidCreationAccountDetailsException.class)
+	public void testAccBal20() throws InvalidCreationAccountDetailsException {
+		serv.createAccount(new Customer("Wil"), 20);
 	}
 
-	@Test(expected = bank.server.exception.DuplicateAccountException.class)
-	public void testAccDuplicate() throws DuplicateAccountException {
-		try {
-			serv.createAccount("Tim", 120);
-			serv.createAccount("Tim", 250);
-		} catch (InvalidAccountNameException | InsufficientBalanceException e) {
-			fail(UNEXPECTED_EXCEPTION);
-		}
+	@Test(expected = bank.server.exception.InvalidCreationAccountDetailsException.class)
+	public void testAccDuplicate() throws InvalidCreationAccountDetailsException {
+		serv.createAccount(new Customer("Tim"), 120);
+		serv.createAccount(new Customer("Tim"), 250);
 	}
 
 	// TestShowBal ------------------------------------------

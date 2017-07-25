@@ -1,6 +1,8 @@
 package bank.server.repo;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import bank.server.beans.Account;
 
 public class AccountRepoImp implements IAccountRepo {
@@ -10,20 +12,9 @@ public class AccountRepoImp implements IAccountRepo {
 		list = new ArrayList<>();
 	}
 
-	public String save(Account acc) {
+	public boolean save(Account acc) {
 		list.add(acc);
-		return "Account is successfully created," + " id: " + acc.getID();
-	}
-
-	public Account findOneName(String name) {
-		if (!list.isEmpty()) {
-			for (Account account : list) {
-				if (account.getName().equals(name)) {
-					return account;
-				}
-			}
-		}
-		return null;
+		return true;
 	}
 
 	public Account findOneID(int id) {
@@ -35,6 +26,10 @@ public class AccountRepoImp implements IAccountRepo {
 			}
 		}
 		return null;
+	}
+
+	public List<Account> findAll() {
+		return list;
 	}
 
 }

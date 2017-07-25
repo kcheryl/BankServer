@@ -3,23 +3,19 @@ package bank.server.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import bank.server.utility.UniqueIDGenerator;
-
 public class Account {
-	private String name;
+	private Customer customer;
 	private int id;
 	private double balance;
 	private List<Transaction> list;
 
-	public Account(String name, double balance) {
-		this.name = name;
-		this.balance = balance;
+	public Account(int id) {
 		list = new ArrayList<>();
-		id = UniqueIDGenerator.getAccID();
+		this.id = id;
 	}
 
-	public String getName() {
-		return this.name;
+	public Customer getCustomer() {
+		return this.customer;
 	}
 
 	public int getID() {
@@ -34,12 +30,8 @@ public class Account {
 		return this.list;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setID(int id) {
-		this.id = id;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public void setBalance(double balance) {
@@ -52,7 +44,8 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "Account:[Name=" + name + ", Id=" + id + ", Balance=$" + String.format("%.2f", balance) + "]";
+		return "Account:[Name=" + customer.getName() + ", Id=" + id + ", Balance=$" + String.format("%.2f", balance)
+				+ "]";
 	}
 
 }

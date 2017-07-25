@@ -3,19 +3,18 @@ package bank.server.service;
 import java.util.List;
 
 import bank.server.beans.Account;
+import bank.server.beans.Customer;
 import bank.server.beans.Transaction;
-import bank.server.exception.DuplicateAccountException;
 import bank.server.exception.ExceedWithdrawLimitException;
 import bank.server.exception.InsufficientAmountException;
 import bank.server.exception.InsufficientBalanceException;
 import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
-import bank.server.exception.InvalidAccountNameException;
+import bank.server.exception.InvalidCreationAccountDetailsException;
 import bank.server.exception.InvalidDateException;
 
 public interface IService {
-	public String createAccount(String name, double balance)
-			throws InvalidAccountNameException, InsufficientBalanceException, DuplicateAccountException;
+	public Account createAccount(Customer customer, double balance) throws InvalidCreationAccountDetailsException;
 
 	public Account showBalance(int id) throws InvalidAccountException;
 

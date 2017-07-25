@@ -5,41 +5,51 @@ import java.util.Calendar;
 import java.util.List;
 
 import bank.server.beans.Account;
+import bank.server.beans.Customer;
 import bank.server.beans.Transaction;
-import bank.server.exception.DuplicateAccountException;
 import bank.server.exception.ExceedWithdrawLimitException;
 import bank.server.exception.InsufficientAmountException;
 import bank.server.exception.InsufficientBalanceException;
 import bank.server.exception.InsufficientTransactionsException;
 import bank.server.exception.InvalidAccountException;
-import bank.server.exception.InvalidAccountNameException;
+import bank.server.exception.InvalidCreationAccountDetailsException;
 import bank.server.exception.InvalidDateException;
-import bank.server.repo.AccountRepoImp;
+import bank.server.repo.IAccountRepo;
+import bank.server.utility.UniqueIDGenerator;
 
 public class ServiceImp implements IService {
-	private AccountRepoImp repo;
+	private IAccountRepo repo;
 
-	public ServiceImp() {
-		repo = new AccountRepoImp();
+	public ServiceImp(IAccountRepo repo) {
+		this.repo = repo;
 	}
 
-	public String createAccount(String name, double balance)
-			throws InvalidAccountNameException, InsufficientBalanceException, DuplicateAccountException {
+	public Account createAccount(Customer customer, double balance) throws InvalidCreationAccountDetailsException {
 		String empty = "";
-		if (name == null || name.equals(empty)) {
-			throw new InvalidAccountNameException("Invalid account name");
+		if (customer.getName() == null || customer.getName().equals(empty)) {
+			return null;
 		}
 		if (balance < 100) {
-			throw new InsufficientBalanceException("Insufficient starting balance");
+			throw new InvalidCreationAccountDetailsException("Insufficient starting balance");
 		}
 
-		Account newAcc = new Account(name, balance);
-		Account existingAcc = repo.findOneName(newAcc.getName());
-		if (existingAcc != null) {
-			throw new DuplicateAccountException("An account has already been created");
-		} else {
-			return repo.save(newAcc);
+		int id = UniqueIDGenerator.getAccID();
+		Account newAcc = new Account(id);
+		newAcc.setCustomer(customer);
+		newAcc.setBalance(balance);
+
+		List<Account> existingAccList = repo.findAll();
+		if (!existingAccList.isEmpty()) {
+			for (Account acc : existingAccList) {
+				if (acc.getCustomer().getName().equals(customer.getName())) {
+					throw new InvalidCreationAccountDetailsException("An account has already been created");
+				}
+			}
 		}
+		if (repo.save(newAcc)) {
+			return newAcc;
+		}
+		return null;
 	}
 
 	public Account showBalance(int id) throws InvalidAccountException {
