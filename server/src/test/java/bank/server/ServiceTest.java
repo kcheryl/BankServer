@@ -45,6 +45,7 @@ public class ServiceTest {
 			serv.createAccount(new Customer("Pat"), 740); // id=10
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -68,6 +69,7 @@ public class ServiceTest {
 			assertEquals(null, result);
 		} catch (InvalidCreationAccountDetailsException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -91,6 +93,7 @@ public class ServiceTest {
 			assertEquals(expected, result);
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -108,6 +111,7 @@ public class ServiceTest {
 			assertEquals(expected, result);
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -117,6 +121,7 @@ public class ServiceTest {
 			serv.deposit(0, 400, "12/7");
 		} catch (InsufficientBalanceException | InvalidDateException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -126,6 +131,7 @@ public class ServiceTest {
 			serv.deposit(2, 0, "5/3");
 		} catch (InvalidAccountException | InvalidDateException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -135,6 +141,7 @@ public class ServiceTest {
 			serv.deposit(2, 50, "52/1");
 		} catch (InvalidAccountException | InsufficientBalanceException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -147,6 +154,7 @@ public class ServiceTest {
 			assertEquals(expected, result);
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -156,6 +164,7 @@ public class ServiceTest {
 			serv.withdraw(0, 500, "10/7");
 		} catch (InsufficientBalanceException | InvalidDateException | ExceedWithdrawLimitException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -165,6 +174,7 @@ public class ServiceTest {
 			serv.withdraw(3, 700, "20/6");
 		} catch (InvalidAccountException | InvalidDateException | ExceedWithdrawLimitException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -174,6 +184,7 @@ public class ServiceTest {
 			serv.withdraw(3, 50, "20/13");
 		} catch (InvalidAccountException | InsufficientBalanceException | ExceedWithdrawLimitException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -184,6 +195,7 @@ public class ServiceTest {
 			serv.withdraw(4, 600, "10/7/2017");
 		} catch (InvalidAccountException | InsufficientBalanceException | InvalidDateException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -196,6 +208,7 @@ public class ServiceTest {
 			assertEquals(expected, result);
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -205,6 +218,7 @@ public class ServiceTest {
 			serv.fundTransfer(20, 6, 100, "17/6");
 		} catch (InsufficientAmountException | InvalidDateException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -214,6 +228,7 @@ public class ServiceTest {
 			serv.fundTransfer(6, 20, 20, "2/6");
 		} catch (InsufficientAmountException | InvalidDateException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -223,6 +238,7 @@ public class ServiceTest {
 			serv.fundTransfer(6, 1, 1000, "2/4");
 		} catch (InvalidAccountException | InvalidDateException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -232,6 +248,7 @@ public class ServiceTest {
 			serv.fundTransfer(5, 6, 20, "2/40");
 		} catch (InvalidAccountException | InsufficientAmountException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -263,6 +280,7 @@ public class ServiceTest {
 			assertEquals(expected, result.toString());
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -273,6 +291,7 @@ public class ServiceTest {
 			serv.printTransactions10(8);
 		} catch (InsufficientBalanceException | InvalidDateException | InvalidAccountException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -289,6 +308,7 @@ public class ServiceTest {
 			assertEquals(expected, result.toString());
 		} catch (Exception e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
@@ -299,6 +319,7 @@ public class ServiceTest {
 			serv.printTransactionsPeriod(10, "2/5", "5/4");
 		} catch (InsufficientBalanceException | InvalidAccountException | InsufficientTransactionsException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
