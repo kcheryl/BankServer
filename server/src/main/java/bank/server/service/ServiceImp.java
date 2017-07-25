@@ -38,6 +38,14 @@ public class ServiceImp implements IService {
 		newAcc.setCustomer(customer);
 		newAcc.setBalance(balance);
 
+		checkDuplicate(customer);
+		if (repo.save(newAcc)) {
+			return newAcc;
+		}
+		return null;
+	}
+
+	private void checkDuplicate(Customer customer) throws InvalidCreationAccountDetailsException {
 		List<Account> existingAccList = repo.findAll();
 		if (!existingAccList.isEmpty()) {
 			for (Account acc : existingAccList) {
@@ -46,10 +54,6 @@ public class ServiceImp implements IService {
 				}
 			}
 		}
-		if (repo.save(newAcc)) {
-			return newAcc;
-		}
-		return null;
 	}
 
 	public Account showBalance(int id) throws InvalidAccountException {

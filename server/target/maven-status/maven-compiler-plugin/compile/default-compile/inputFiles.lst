@@ -5,7 +5,6 @@ D:\BankServer\server\src\main\java\bank\server\exception\InvalidDateException.ja
 D:\BankServer\server\src\main\java\bank\server\service\ServiceImp.java
 D:\BankServer\server\src\main\java\bank\server\utility\UniqueIDGenerator.java
 D:\BankServer\server\src\main\java\bank\server\exception\InvalidAccountException.java
-D:\BankServer\server\src\main\java\bank\server\exception\InvalidAccountNameException.java
 D:\BankServer\server\src\main\java\bank\server\service\IService.java
 D:\BankServer\server\src\main\java\bank\server\beans\Transaction.java
 D:\BankServer\server\src\main\java\bank\server\exception\InsufficientTransactionsException.java
@@ -14,4 +13,3 @@ D:\BankServer\server\src\main\java\bank\server\repo\AccountRepoImp.java
 D:\BankServer\server\src\main\java\bank\server\exception\InvalidCreationAccountDetailsException.java
 D:\BankServer\server\src\main\java\bank\server\beans\Customer.java
 D:\BankServer\server\src\main\java\bank\server\exception\ExceedWithdrawLimitException.java
-D:\BankServer\server\src\main\java\bank\server\exception\DuplicateAccountException.java
