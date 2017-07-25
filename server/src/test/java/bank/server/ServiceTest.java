@@ -47,9 +47,8 @@ public class ServiceTest {
 	// TestCreateAcc ------------------------------------------
 	@Test
 	public void testCreateAcc() {
-		Account result;
 		try {
-			result = serv.createAccount(new Customer("Rose"), 200);
+			Account result = serv.createAccount(new Customer("Rose"), 200);
 			String expected = "Account:[Name=Rose, Id=13, Balance=$200.00]";
 			assertEquals(expected, result.toString());
 		} catch (InvalidCreationAccountDetailsException e) {
@@ -59,9 +58,8 @@ public class ServiceTest {
 
 	@Test
 	public void testAccNameNull() {
-		Account result;
 		try {
-			result = serv.createAccount(new Customer(null), 100);
+			Account result = serv.createAccount(new Customer(null), 100);
 			assertEquals(null, result);
 		} catch (InvalidCreationAccountDetailsException e) {
 			fail(UNEXPECTED_EXCEPTION);
