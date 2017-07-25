@@ -3,6 +3,8 @@ package bank.server.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import bank.server.beans.Account;
 import bank.server.beans.Customer;
@@ -139,10 +141,12 @@ public class ServiceImp implements IService {
 
 		Calendar c = Calendar.getInstance();
 		c.setLenient(false);
+		Logger logger = Logger.getLogger("Exceptions");
 		try {
 			c.set(year, month, day);
 			c.getTime();
 		} catch (Exception e) {
+			logger.log(Level.FINEST, e.getMessage(), e);
 			return null;
 		}
 		return day + "/" + month + "/" + year;
