@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,11 +25,13 @@ import bank.server.service.ServiceImp;
 
 public class ServiceTest {
 	static ServiceImp serv;
+	static Logger logger;
 	private static final String UNEXPECTED_EXCEPTION = "Unexpected exception";
 
 	@BeforeClass
 	public static void setUpClass() {
 		serv = new ServiceImp(new AccountRepoImp());
+		logger = Logger.getLogger("Exceptions");
 		try {
 			serv.createAccount(new Customer("Jane"), 200); // id=1
 			serv.createAccount(new Customer("Peter"), 500); // id=2
@@ -53,6 +57,7 @@ public class ServiceTest {
 			assertEquals(expected, result.toString());
 		} catch (InvalidCreationAccountDetailsException e) {
 			fail(UNEXPECTED_EXCEPTION);
+			logger.log(Level.FINEST, e.getMessage(), e);
 		}
 	}
 
